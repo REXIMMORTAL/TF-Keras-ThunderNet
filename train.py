@@ -15,22 +15,25 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import Progbar
 
 from config import Config
-from util import get_data, get_img_output_length
+from util import get_pascal_data, get_img_output_length
 from thundernet.utils.np_opr import get_anchor_gt, rpn_to_roi, calc_iou
 from thundernet.layers.snet import snet_146
 from thundernet.layers.detector import rpn_layer, classifier_layer
 from thundernet.utils.losses import rpn_loss_cls, rpn_loss_regr,class_loss_cls, class_loss_regr
 
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 # ----------------------------- Path_config ------------------------------ #
-base_path = '/data2/intern/TF-Keras-ThunderNet/'
-train_path = '/data2/intern/TF-Keras-ThunderNet/data/train.txt'
+# base_path = '/data2/intern/TF-Keras-ThunderNet/'
+#import pdb;pdb.set_trace()
+base_path = os.getcwd()
+train_annotation_path = os.path.join(base_path, './data/pascal_train2007.json')
+train_images_path = os.path.join(base_path, './data/images/')##add files
 output_weight_path = os.path.join(base_path, './model/model_thunder_snet.h5')
-record_path = os.path.join(base_path, 'model/record.csv')
-base_weight_path = os.path.join(base_path, 'model/vgg16_weights_tf_dim_ordering_tf_kernels.h5')
+record_path = os.path.join(base_path, './model/record.csv')
+base_weight_path = os.path.join(base_path, './model/vgg16_weights_tf_dim_ordering_tf_kernels.h5')
 config_output_filename = os.path.join(base_path, './model/model_snet_config.pickle')
 
 # ------------------------------- Config ----------------------------------- #
@@ -55,7 +58,7 @@ C.base_net_weights = base_weight_path
 # This step will spend some time to load the data         #
 # --------------------------------------------------------#
 st = time.time()
-train_imgs, classes_count, class_mapping = get_data(train_path)
+train_imgs, classes_count, class_mapping = get_pascal_data(train_annotation_path)
 print()
 print('Spend %0.25f mins to load the data' % ((time.time()-st)/60) )
 
